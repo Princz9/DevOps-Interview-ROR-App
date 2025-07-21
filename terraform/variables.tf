@@ -1,5 +1,9 @@
-variable "aws_region" { default = "ap-south-1" }
-variable "db_name"     { default = "rorappdb" }
-variable "db_user"     { default = "roruser" }
-variable "db_password" { default = "RORdb@12345" }
-variable "project_name" { default = "devops-ror" }
+variable "project_name" {}
+variable "subnet_ids" { type = list(string) }
+variable "sg_id" {}
+variable "vpc_id" {}
+variable "db_name" {}
+variable "db_username" {}
+variable "db_password" {}
+variable "image_url" {}
+variable "region" {}
