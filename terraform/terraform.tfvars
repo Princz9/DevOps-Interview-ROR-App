@@ -1,0 +1,9 @@
+project_name = "devops-ror-app"
+subnet_ids   = ["subnet-xxxxxxxx", "subnet-yyyyyyyy"]
+sg_id        = "sg-xxxxxxxx"
+vpc_id       = "vpc-xxxxxxxx"
+db_name      = "railsappdb"
+db_username  = "railsuser"
+db_password  = "StrongP@ssw0rd"
+image_url    = "123456789012.dkr.ecr.us-east-1.amazonaws.com/devops-ror-app:latest"
+region       = "us-east-1"
