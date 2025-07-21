@@ -1,20 +1,23 @@
-resource "aws_ecs_cluster" "app_cluster" {
-  name = "ror-app-cluster"
+resource "aws_ecs_cluster" "main" {
+  name = "${var.project_name}-cluster"
+
+  tags = {
+    Name = "${var.project_name}-cluster"
+  }
 }
 
-resource "aws_ecs_task_definition" "ror_task" {
-  family                   = "ror-task"
+resource "aws_ecs_task_definition" "app" {
+  family                   = "${var.project_name}-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "512"
   memory                   = "1024"
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = var.execution_role_arn
 
   container_definitions = jsonencode([
     {
-      name      = "ror-app"
-      image     = "${aws_ecr_repository.ror_app.repository_url}:latest"
-      essential = true
+      name      = "web"
+      image     = var.image_url
       portMappings = [
         {
           containerPort = 3000
@@ -22,34 +25,43 @@ resource "aws_ecs_task_definition" "ror_task" {
         }
       ]
       environment = [
-        { name = "DATABASE_HOST", value = aws_db_instance.postgres.address },
+        { name = "DATABASE_HOST", value = var.db_host },
         { name = "DATABASE_NAME", value = var.db_name },
-        { name = "DATABASE_USER", value = var.db_user },
+        { name = "DATABASE_USERNAME", value = var.db_username },
         { name = "DATABASE_PASSWORD", value = var.db_password },
-        { name = "S3_BUCKET", value = aws_s3_bucket.ror_bucket.bucket }
+        { name = "AWS_REGION", value = var.region },
+        { name = "S3_BUCKET_NAME", value = var.bucket_name }
       ]
     }
   ])
 }
 
-resource "aws_ecs_service" "ror_service" {
-  name            = "ror-service"
-  cluster         = aws_ecs_cluster.app_cluster.id
-  task_definition = aws_ecs_task_definition.ror_task.arn
+resource "aws_ecs_service" "app" {
+  name            = "${var.project_name}-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.app.arn
   launch_type     = "FARGATE"
-  desired_count   = 2
+  desired_count   = 1
 
   network_configuration {
-    subnets         = module.vpc.private_subnets
+    subnets         = var.subnet_ids
+    security_groups = [var.sg_id]
     assign_public_ip = false
-    security_groups = [aws_security_group.ecs_sg.id]
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.ecs_tg.arn
-    container_name   = "ror-app"
+    target_group_arn = var.target_group_arn
+    container_name   = "web"
     container_port   = 3000
   }
 
-  depends_on = [aws_lb_listener.ecs_listener]
+  depends_on = [aws_lb_listener.http]
+}
+
+output "ecs_cluster_name" {
+  value = aws_ecs_cluster.main.name
+}
+
+output "ecs_service_name" {
+  value = aws_ecs_service.app.name
 }
