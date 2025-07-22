@@ -27,6 +27,10 @@ resource "aws_subnet" "private" {
     Name = "${var.project_name}-private-${count.index}"
   }
 }
+resource "aws_eip" "nat" {
+  domain = "vpc"
+}
+
 
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
