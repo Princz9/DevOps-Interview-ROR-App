@@ -12,3 +12,7 @@ variable "db_username" {}
 variable "db_password" {}
 variable "bucket_name" {}
 variable "target_group_arn" {}
+variable "vpc_id" {
+  description = "The VPC ID to associate with resources"
+  type        = string
+}
