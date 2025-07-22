@@ -20,14 +20,3 @@ variable "availability_zones" {
   description = "List of availability zones"
   type        = list(string)
 }
-variable "project_name" {
-  type = string
-}
-
-variable "subnet_ids" {
-  type = list(string)
-}
-
-variable "sg_id" {
-  type = string
-}
