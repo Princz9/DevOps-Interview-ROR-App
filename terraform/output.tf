@@ -13,3 +13,6 @@ output "s3_bucket_name" {
 output "ecs_service_name" {
   value = module.ecs.service_name
 }
+output "vpc_id" {
+  value = aws_vpc.main.id
+}
