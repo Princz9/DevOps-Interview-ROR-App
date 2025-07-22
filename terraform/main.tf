@@ -41,4 +41,3 @@ module "ecs" {
   bucket_name        = module.s3.bucket_name
   target_group_arn   = module.alb.app_tg_arn
 }
-vpc_id = module.vpc.vpc_id
