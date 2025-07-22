@@ -16,3 +16,7 @@ variable "vpc_id" {
   description = "The VPC ID to associate with resources"
   type        = string
 }
+variable "availability_zones" {
+  description = "List of availability zones"
+  type        = list(string)
+}
