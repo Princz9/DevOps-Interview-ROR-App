@@ -8,3 +8,4 @@ db_password  = "StrongP@ssw0rd"
 image_url    = "123456789012.dkr.ecr.us-east-1.amazonaws.com/devops-ror-app:latest"
 region       = "us-east-1"
 availability_zones = ["us-east-1a", "us-east-1b"]
+bucket_name = "my-unique-s3-bucket-name"
